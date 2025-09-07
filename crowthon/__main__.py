@@ -75,3 +75,35 @@ async def main():
 
 # Run the main coroutine using asyncio's event loop
 run(main())
+
+import os
+import threading
+from flask import Flask
+from pyrogram import Client
+
+# ---- Yaha apka usertagger bot ka pura code hoga ----
+# Example:
+app_bot = Client(
+    "usertagger",
+    api_id=int(os.environ["API_ID"]),
+    api_hash=os.environ["API_HASH"],
+    bot_token=os.environ["BOT_TOKEN"]
+)
+
+# Flask server
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Usertagger Bot is Running on Render!"
+
+def run_flask():
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
+if __name__ == "__main__":
+    # Flask ko alag thread me run karo
+    threading.Thread(target=run_flask).start()
+    
+    # Telegram bot start karo
+    app_bot.run()
